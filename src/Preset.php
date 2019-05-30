@@ -3,12 +3,14 @@
 namespace harmonic\LaravelPreset;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
 use Illuminate\Foundation\Console\Presets\Preset as BasePreset;
 use Illuminate\Filesystem\Filesystem;
 
 class Preset extends BasePreset {
     protected $command;
     protected $options = [];
+    protected static $installTheme = false;
     protected $packages = [
         'bensampo/laravel-enum' => [
             'repo' => 'https://github.com/BenSampo/laravel-enum',
@@ -55,6 +57,7 @@ class Preset extends BasePreset {
         $this->options = $this->gatherOptions();
 
         if ($this->options['theme']) {
+            static::$installTheme = true;
             $this->installTheme();
         }
 
@@ -77,7 +80,7 @@ class Preset extends BasePreset {
     }
 
     protected static function updatePackageArray(array $packages) {
-        if ($this->options['theme']) {
+        if (static::$installTheme) {
             return array_merge([
                 '@babel/plugin-syntax-dynamic-import' => '^7.2.0',
                 'inertia' => 'github:inertiajs/inertia',
