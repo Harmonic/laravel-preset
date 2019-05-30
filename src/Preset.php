@@ -199,4 +199,8 @@ class Preset extends BasePreset {
     private function updateGitignore() {
         copy(__DIR__ . '/stubs/gitignore-stub', base_path('.gitignore'));
     }
+
+    private function runCommand($command) {
+        return exec(sprintf('%s 2>&1', $command));
+    }
 }
