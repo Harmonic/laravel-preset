@@ -51,6 +51,31 @@ class Preset extends BasePreset {
         (new static($command))->run();
     }
 
+    public function run() {
+        $this->options = $this->gatherOptions();
+
+        if ($this->options['theme']) {
+            $this->installTheme();
+        }
+
+        if (!empty($this->options['packages'])) {
+            $this->command->task('Install composer dependencies', function () {
+                return $this->updateComposerPackages();
+            });
+        }
+        $this->command->task('Install composer dev-dependencies', function () {
+            return $this->updateComposerDevPackages();
+        });
+
+        //TODO: Don't forget to do the following if tailwind css is being installed:
+        // $files->deleteDirectory(resource_path('sass'));
+        // $files->delete(public_path('js/app.js'));
+        // $files->delete(public_path('css/app.css'));
+
+        static::updatePackages();
+        $this->updateGitignore();
+    }
+
     protected static function updatePackageArray(array $packages) {
         if ($this->options['theme']) {
             return array_merge([
@@ -72,23 +97,6 @@ class Preset extends BasePreset {
         }
 
         return $packages;
-    }
-
-    public function run() {
-        $this->options = $this->gatherOptions();
-
-        if ($this->options['theme']) {
-            $this->options['install_tailwind'] = true;
-            $this->installTheme();
-        }
-
-        //TODO: Don't forget to do the following if tailwind css is being installed:
-        // $files->deleteDirectory(resource_path('sass'));
-        // $files->delete(public_path('js/app.js'));
-        // $files->delete(public_path('css/app.css'));
-
-        static::updatePackages();
-        $this->updateGitignore();
     }
 
     private function gatherOptions() {
@@ -123,6 +131,13 @@ class Preset extends BasePreset {
         return $choices;
     }
 
+    private function updateComposerPackages() {
+        $this->runCommand(sprintf(
+            'composer require %s',
+            $this->resolveForComposer($this->options['packages'])
+        ));
+    }
+
     private function packages() {
         return Collection::make($this->packages)
             ->where('dev', false)
@@ -137,7 +152,26 @@ class Preset extends BasePreset {
             ->toArray();
     }
 
+    private function resolveForComposer($packages) {
+        return Collection::make($packages)
+            ->transform(function ($package) {
+                return isset($this->packages[$package]['version'])
+                    ? $package . ':' . $this->packages[$package]['version']
+                    : $package;
+            })
+            ->implode(' ');
+    }
+
+    private function updateComposerDevPackages() {
+        $this->runCommand(sprintf(
+            'composer require --dev %s',
+            $this->resolveForComposer($this->devPackages())
+        ));
+    }
+
     private function installTheme() {
+        $this->options['install_tailwind'] = true;
+
         // Add all the composer theme related packages to the list to install
         $this->packages = array_merge($this->packages, $this->themePackages);
 
