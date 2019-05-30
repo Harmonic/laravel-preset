@@ -1,0 +1,27 @@
+{
+    "name": "harmonic/laravel-preset",
+    "description": "Laravel preset which includes InertiaJS, Tailwind CSS and harmonic admin theme.",
+    "type": "laravel-preset",
+    "authors": [
+        {
+            "name": "Craig Harman",
+            "email": "craig@harmonicnewmedia.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^5.8",
+        "sixlive/dotenv-editor": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "harmonic\\LaravelPreset\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "harmonic\\LaravelPreset\\PresetServiceProvider"
+            ]
+        }
+    }
+}
