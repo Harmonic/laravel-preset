@@ -176,7 +176,7 @@ class Preset extends BasePreset {
         $this->options['install_tailwind'] = true;
 
         // Add all the composer theme related packages to the list to install
-        $this->packages = array_merge($this->packages, $this->themePackages);
+        $this->options['packages'] = array_merge($this->options['packages'], $this->themePackages);
 
         copy(__DIR__ . '/stubs/theme/webpack.mix.js', base_path('webpack.mix.js'));
         //TODO: Potentially replace laravel.test url with one from set up questions
