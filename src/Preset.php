@@ -37,6 +37,10 @@ class Preset extends BasePreset {
         ],
     ];
     protected $themePackages = [
+        'inertiajs/inertia-laravel' => [
+            'repo' => 'https://github.com/inertiajs/inertia-laravel',
+            'version' => 'dev-master'
+        ],
         'tightenco/ziggy' => [
             'repo' => 'https://github.com/tightenco/ziggy'
         ],
