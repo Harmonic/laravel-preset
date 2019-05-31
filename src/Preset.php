@@ -62,7 +62,9 @@ class Preset extends BasePreset {
 
         if ($this->options['theme']) {
             static::$installTheme = true;
-            $this->installTheme();
+            $this->command->task('Install harmonic theme', function () {
+                return $this->installTheme();
+            });
         }
 
         if (!empty($this->options['packages'])) {
@@ -72,6 +74,10 @@ class Preset extends BasePreset {
         }
         $this->command->task('Install composer dev-dependencies', function () {
             return $this->updateComposerDevPackages();
+        });
+
+        $this->command->task('Update ENV files', function () {
+            $this->updateEnvFile();
         });
 
         //TODO: Don't forget to do the following if tailwind css is being installed:
@@ -108,6 +114,7 @@ class Preset extends BasePreset {
 
     private function gatherOptions() {
         $options = [
+            'settings' => $this->promptForSettings(),
             'theme' => $this->command->confirm('Install harmonic theme?', true),
             'packages' => $this->promptForPackagesToInstall(),
             'remove_after_install' => $this->command->confirm('Remove harmonic/laravel-preset after install?', true),
@@ -136,6 +143,18 @@ class Preset extends BasePreset {
             return [];
         }
         return $choices;
+    }
+
+    private function promptForSettings() {
+        $name = $this->ask('Project name (long for use in .env): ');
+        $uri = $this->ask('Short name (will be used to create url project-name.test): ');
+        $dbName = $this->ask('DB name [' + $uri + ']: ', $uri);
+
+        return [
+            'name' => $name,
+            'uri' => $uri,
+            'db' => $dbName
+        ];
     }
 
     private function updateComposerPackages() {
@@ -203,6 +222,30 @@ class Preset extends BasePreset {
             $files->copyDirectory(__DIR__ . '/stubs/theme/css', resource_path('css'));
             $files->copyDirectory(__DIR__ . '/stubs/theme/Auth', app_path('Http/Controllers/Auth'));
             $files->copyDirectory(__DIR__ . '/stubs/theme/Traits', app_path('Traits'));
+        });
+
+        return true;
+    }
+
+    private function updateEnvFile() {
+        tap(new DotenvEditor, function ($editor) {
+            $editor->load(base_path('.env'));
+            $editor->set('DB_DATABASE', $this->options['settings']['db']);
+            $editor->set('DB_USERNAME', 'root');
+            $editor->set('DB_PASSWORD', 'root');
+            $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
+            $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . 'test');
+            $editor->save();
+        });
+        tap(new DotenvEditor, function ($editor) {
+            $editor = new DotenvEditor;
+            $editor->load(base_path('.env.example'));
+            $editor->set('DB_DATABASE', $this->options['settings']['db']);
+            $editor->set('DB_USERNAME', 'root');
+            $editor->set('DB_PASSWORD', 'root');
+            $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
+            $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . 'test');
+            $editor->save();
         });
     }
 
