@@ -129,6 +129,12 @@ class Preset extends BasePreset {
 
         $this->updateGitignore();
 
+        if ($this->options['theme']) {
+            $this->command->task('Run migrations', function () {
+                $this->runCommand('php artisan migrate');
+            });
+        }
+
         if ($this->options['remove_after_install']) {
             $this->command->task('Remove harmonic/laravel-preset', function () {
                 $this->runCommand('composer remove harmonic/laravel-preset');
@@ -274,6 +280,7 @@ class Preset extends BasePreset {
         copy(__DIR__ . '/stubs/theme/User.php', app_path('User.php'));
         copy(__DIR__ . '/stubs/theme/web.php', base_path('routes/web.php'));
         copy(__DIR__ . '/stubs/theme/AppServiceProvider.php', app_path('Providers/AppServiceProvider.php'));
+        copy(__DIR__ . '/stubs/theme/2019_05_29_033345_add_soft_deletes_to_users_table.php', base_path('database/migrations/2019_05_29_033345_add_soft_deletes_to_users_table.php'));
 
         tap(new Filesystem, function ($files) {
             $files->delete(resource_path('views/home.blade.php'));
