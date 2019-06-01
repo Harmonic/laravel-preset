@@ -38,11 +38,15 @@ class Preset extends BasePreset {
         ],
     ];
     protected $themePackages = [
+        'inertiajs/inertia-laravel' => [
+            'repo' => 'https://github.com/inertiajs/inertia-laravel',
+            'version' => 'dev-master',
+        ],
         'tightenco/ziggy' => [
-            'repo' => 'https://github.com/tightenco/ziggy'
+            'repo' => 'https://github.com/tightenco/ziggy',
         ],
         'reinink/remember-query-strings' => [
-            'repo' => 'https://github.com/reinink/remember-query-strings'
+            'repo' => 'https://github.com/reinink/remember-query-strings',
         ]
     ];
     protected static $jsInclude = [
@@ -286,10 +290,11 @@ class Preset extends BasePreset {
         tap(new DotenvEditor, function ($editor) {
             $editor->load(base_path('.env'));
             $editor->set('DB_DATABASE', $this->options['settings']['db']);
+            $editor->set('DB_HOST', 'mysql');
             $editor->set('DB_USERNAME', 'root');
             $editor->set('DB_PASSWORD', 'root');
             $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
-            $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . 'test');
+            $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . '.test');
             $editor->save();
         });
         tap(new DotenvEditor, function ($editor) {
