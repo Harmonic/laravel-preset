@@ -195,9 +195,9 @@ class Preset extends BasePreset {
     }
 
     private function promptForSettings() {
-        $name = $this->ask('Project name (long for use in .env): ');
-        $uri = $this->ask('Short name (will be used to create url project-name.test): ');
-        $dbName = $this->ask('DB name [' + $uri + ']: ', $uri);
+        $name = $this->command->ask('Project name (long for use in .env): ');
+        $uri = $this->command->ask('Short name (will be used to create url project-name.test): ');
+        $dbName = $this->command->ask('DB name [' + $uri + ']: ', $uri);
 
         return [
             'name' => $name,
