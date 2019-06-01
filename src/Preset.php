@@ -45,12 +45,12 @@ class Preset extends BasePreset {
             'repo' => 'https://github.com/reinink/remember-query-strings'
         ]
     ];
-    protected $jsInclude = [
+    protected static $jsInclude = [
         '@babel/plugin-syntax-dynamic-import' => '^7.2.0',
         'browser-sync' => '^2.26.5',
         'browser-sync-webpack-plugin' => '2.0.1',
     ];
-    protected $jsExclude = [];
+    protected static $jsExclude = [];
 
     public function __construct($command) {
         $this->command = $command;
@@ -158,7 +158,7 @@ class Preset extends BasePreset {
     }
 
     protected static function updatePackageArray(array $packages) {
-        return array_merge($this->jsInclude, Arr::except($packages, $this->jsExclude));
+        return array_merge(static::$jsInclude, Arr::except($packages, static::$jsExclude));
     }
 
     private function gatherOptions() {
