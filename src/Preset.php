@@ -2,6 +2,7 @@
 
 namespace harmonic\LaravelPreset;
 
+use sixlive\DotenvEditor\DotenvEditor;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Foundation\Console\Presets\Preset as BasePreset;
