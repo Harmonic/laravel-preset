@@ -38,10 +38,6 @@ class Preset extends BasePreset {
         ],
     ];
     protected $themePackages = [
-        'inertiajs/inertia-laravel' => [
-            'repo' => 'https://github.com/inertiajs/inertia-laravel',
-            'version' => 'dev-master',
-        ],
         'tightenco/ziggy' => [
             'repo' => 'https://github.com/tightenco/ziggy',
         ],
@@ -76,6 +72,10 @@ class Preset extends BasePreset {
 
         if ($this->options['install_inertia']) {
             $this->packages['inertiajs/inertia-laravel'] = [
+                'repo' => 'https://github.com/inertiajs/inertia-laravel',
+                'version' => 'dev-master'
+            ];
+            $this->options['packages']['inertiajs/inertia-laravel'] = [
                 'repo' => 'https://github.com/inertiajs/inertia-laravel',
                 'version' => 'dev-master'
             ];
@@ -153,6 +153,13 @@ class Preset extends BasePreset {
         if (!$this->options['theme']) { // theme has its own settings
             copy(__DIR__ . '/stubs/tailwind/resources/css/app.css', resource_path('css/app.css'));
             copy(__DIR__ . '/stubs/tailwind/webpack.mix.js', base_path('webpack.mix.js'));
+            // update the mix file with project-name for browsersync
+            $webpack = fopen(base_path('webpack.mix.js'), 'rw');
+            $wpContents = fread($webpack, filesize(base_path('webpack.mix.js')));
+            $newContent = str_replace('laravel-preset-test.test', $this->options['settings']['uri'], $wpContents);
+            frwite($webpack, $newContent);
+            fclose($webpack);
+
             tap(new Filesystem, function ($files) {
                 $files->delete(resource_path('views/home.blade.php'));
                 $files->delete(resource_path('views/welcome.blade.php'));
