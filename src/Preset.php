@@ -18,7 +18,7 @@ class Preset extends BasePreset {
         ],
         'silber/bouncer' => [
             'repo' => 'https://github.com/JosephSilber/bouncer',
-            'version' => 'v1.0.0-rc.4',
+            'version' => 'v1.0.0-rc.5',
         ],
         'harmonic/laravel-envcoder' => [
             'repo' => 'https://github.com/Harmonic/laravel-envcoder',
@@ -265,7 +265,7 @@ class Preset extends BasePreset {
         $webpack = fopen(base_path('webpack.mix.js'), 'rw');
         $wpContents = fread($webpack, filesize(base_path('webpack.mix.js')));
         $newContent = str_replace('laravel-preset-test.test', $this->options['settings']['uri'], $wpContents);
-        frwite($webpack, $newContent);
+        fwrite($webpack, $newContent);
         fclose($webpack);
         copy(__DIR__ . '/stubs/theme/tailwind.config.js', base_path('tailwind.config.js'));
         copy(__DIR__ . '/stubs/theme/Kernel.php', app_path('Http/Kernel.php'));
