@@ -331,5 +331,6 @@ class Preset extends BasePreset {
                 $packageData['repo'],
             ]));
         }
+        $this->command->line('');
     }
 }
