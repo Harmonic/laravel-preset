@@ -37,10 +37,6 @@ class Preset extends BasePreset {
         ],
     ];
     protected $themePackages = [
-        'inertiajs/inertia-laravel' => [
-            'repo' => 'https://github.com/inertiajs/inertia-laravel',
-            'version' => 'dev-master'
-        ],
         'tightenco/ziggy' => [
             'repo' => 'https://github.com/tightenco/ziggy'
         ],
@@ -48,6 +44,12 @@ class Preset extends BasePreset {
             'repo' => 'https://github.com/reinink/remember-query-strings'
         ]
     ];
+    protected $jsInclude = [
+        '@babel/plugin-syntax-dynamic-import' => '^7.2.0',
+        'browser-sync' => '^2.26.5',
+        'browser-sync-webpack-plugin' => '2.0.1',
+    ];
+    protected $jsExclude = [];
 
     public function __construct($command) {
         $this->command = $command;
@@ -67,6 +69,18 @@ class Preset extends BasePreset {
             });
         }
 
+        if ($this->options['install_inertia']) {
+            $this->packages['inertiajs/inertia-laravel'] = [
+                'repo' => 'https://github.com/inertiajs/inertia-laravel',
+                'version' => 'dev-master'
+            ];
+            $this->jsInclude = array_merge($this->jsInclude, [
+                'inertia' => 'github:inertiajs/inertia',
+                'inertia-vue' => 'inertiajs/inertia-vue',
+                'vue-template-compiler' => '^2.6.10',
+            ]);
+        }
+
         if (!empty($this->options['packages'])) {
             $this->command->task('Install composer dependencies', function () {
                 return $this->updateComposerPackages();
@@ -80,36 +94,70 @@ class Preset extends BasePreset {
             $this->updateEnvFile();
         });
 
-        //TODO: Don't forget to do the following if tailwind css is being installed:
-        // $files->deleteDirectory(resource_path('sass'));
-        // $files->delete(public_path('js/app.js'));
-        // $files->delete(public_path('css/app.css'));
-
-        static::updatePackages();
-        $this->updateGitignore();
-    }
-
-    protected static function updatePackageArray(array $packages) {
-        if (static::$installTheme) {
-            return array_merge([
-                '@babel/plugin-syntax-dynamic-import' => '^7.2.0',
-                'inertia' => 'github:inertiajs/inertia',
-                'inertia-vue' => 'inertiajs/inertia-vue',
-                'vue-template-compiler' => '^2.6.10',
+        if ($this->options['install_tailwind']) {
+            $this->jsInclude = array_merge($this->jsInclude, [
                 'laravel-mix-purgecss' => '^4.1.0',
-                'browser-sync' => '^2.26.5',
-                'browser-sync-webpack-plugin' => '2.0.1',
-                'portal-vue' => '^2.1.4',
                 'postcss-import' => '^12.0.1',
                 'postcss-nesting' => '^7.0.0',
-            ], Arr::except($packages, [
+                'tailwindcss' => '>=1.0.0'
+            ]);
+
+            $this->jsExclude = array_merge($this->jsExclude, [
                 'bootstrap',
                 'bootstrap-sass',
                 'jquery',
-            ]));
+            ]);
+
+            $this->command->task('Install Tailwindcss', function () {
+                static::ensureComponentDirectoryExists();
+                static::updatePackages();
+                $this->tailwindTemplate();
+                static::removeNodeModules();
+            });
+            $this->command->task('Install node dependencies with Yarn', function () {
+                $this->runCommand('yarn install');
+            });
+            $this->command->task('Setup Tailwindcss', function () {
+                $this->runCommand('yarn tailwind init');
+            });
+            $this->command->task('Run node dev build with Yarn', function () {
+                $this->runCommand('yarn dev');
+            });
         }
 
-        return $packages;
+        $this->updateGitignore();
+
+        if ($this->options['remove_after_install']) {
+            $this->command->task('Remove harmonic/laravel-preset', function () {
+                $this->runCommand('composer remove harmonic/laravel-preset');
+                $this->runCommand('composer dumpautoload');
+            });
+        }
+
+        $this->outputSuccessMessage();
+    }
+
+    private function tailwindTemplate() {
+        tap(new Filesystem, function ($files) {
+            $files->deleteDirectory(resource_path('sass'));
+            $files->delete(public_path('css/app.css'));
+            if (!$files->isDirectory($directory = resource_path('css'))) {
+                $files->makeDirectory($directory, 0755, true);
+            }
+        });
+        if (!$this->options['theme']) { // theme has its own settings
+            copy(__DIR__ . '/stubs/tailwind/resources/css/app.css', resource_path('css/app.css'));
+            copy(__DIR__ . '/stubs/tailwind/webpack.mix.js', base_path('webpack.mix.js'));
+            tap(new Filesystem, function ($files) {
+                $files->delete(resource_path('views/home.blade.php'));
+                $files->delete(resource_path('views/welcome.blade.php'));
+                $files->copyDirectory(__DIR__ . '/stubs/tailwind/resources/views', resource_path('views'));
+            });
+        }
+    }
+
+    protected static function updatePackageArray(array $packages) {
+        return array_merge($this->jsInclude, Arr::except($packages, $this->jsExclude));
     }
 
     private function gatherOptions() {
@@ -122,6 +170,7 @@ class Preset extends BasePreset {
 
         if (!$options['theme']) {
             $options['install_tailwind'] = $this->command->confirm('Install Tailwindcss?', true);
+            $options['install_inertia'] = $this->command->confirm('Install Inertia JS?', true);
         }
 
         return $options;
@@ -197,6 +246,11 @@ class Preset extends BasePreset {
 
     private function installTheme() {
         $this->options['install_tailwind'] = true;
+        $this->options['install_inertia'] = true;
+
+        $this->jsInclude = array_merge($this->jsInclude, [
+            'portal-vue' => '^2.1.4',
+        ]);
 
         $themePackages = Collection::make($this->themePackages)->keys()->toArray();
 
@@ -255,5 +309,26 @@ class Preset extends BasePreset {
 
     private function runCommand($command) {
         return exec(sprintf('%s 2>&1', $command));
+    }
+
+    private function getInstalledPackages() {
+        return Collection::make($this->packages)
+            ->filter(function ($data, $package) {
+                return in_array($package, $this->options['packages'])
+                    || ($data['dev'] ?? false);
+            })
+            ->toArray();
+    }
+
+    private function outputSuccessMessage() {
+        $this->command->line('');
+        $this->command->info('Preset installation complete. The packages that were installed may require additional installation steps.');
+        $this->command->line('');
+        foreach ($this->getInstalledPackages() as $package => $packageData) {
+            $this->command->getOutput()->writeln(vsprintf('- %s: <comment>%s</comment>', [
+                $package,
+                $packageData['repo'],
+            ]));
+        }
     }
 }
