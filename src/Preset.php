@@ -75,10 +75,7 @@ class Preset extends BasePreset {
                 'repo' => 'https://github.com/inertiajs/inertia-laravel',
                 'version' => 'dev-master'
             ];
-            $this->options['packages']['inertiajs/inertia-laravel'] = [
-                'repo' => 'https://github.com/inertiajs/inertia-laravel',
-                'version' => 'dev-master'
-            ];
+            $this->options['packages'][] = 'inertiajs/inertia-laravel';
             self::$jsInclude = array_merge(self::$jsInclude, [
                 'inertia' => 'github:inertiajs/inertia',
                 'inertia-vue' => 'inertiajs/inertia-vue',
