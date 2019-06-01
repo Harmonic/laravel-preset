@@ -75,7 +75,7 @@ class Preset extends BasePreset {
                 'repo' => 'https://github.com/inertiajs/inertia-laravel',
                 'version' => 'dev-master'
             ];
-            $this->jsInclude = array_merge($this->jsInclude, [
+            self::$jsInclude = array_merge(self::$jsInclude, [
                 'inertia' => 'github:inertiajs/inertia',
                 'inertia-vue' => 'inertiajs/inertia-vue',
                 'vue-template-compiler' => '^2.6.10',
@@ -96,14 +96,14 @@ class Preset extends BasePreset {
         });
 
         if ($this->options['install_tailwind']) {
-            $this->jsInclude = array_merge($this->jsInclude, [
+            self::$jsInclude = array_merge(self::$jsInclude, [
                 'laravel-mix-purgecss' => '^4.1.0',
                 'postcss-import' => '^12.0.1',
                 'postcss-nesting' => '^7.0.0',
                 'tailwindcss' => '>=1.0.0'
             ]);
 
-            $this->jsExclude = array_merge($this->jsExclude, [
+            self::$jsExclude = array_merge(self::$jsExclude, [
                 'bootstrap',
                 'bootstrap-sass',
                 'jquery',
@@ -249,7 +249,7 @@ class Preset extends BasePreset {
         $this->options['install_tailwind'] = true;
         $this->options['install_inertia'] = true;
 
-        $this->jsInclude = array_merge($this->jsInclude, [
+        self::$jsInclude = array_merge(self::$jsInclude, [
             'portal-vue' => '^2.1.4',
         ]);
 
