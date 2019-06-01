@@ -150,12 +150,6 @@ class Preset extends BasePreset {
         if (!$this->options['theme']) { // theme has its own settings
             copy(__DIR__ . '/stubs/tailwind/resources/css/app.css', resource_path('css/app.css'));
             copy(__DIR__ . '/stubs/tailwind/webpack.mix.js', base_path('webpack.mix.js'));
-            // update the mix file with project-name for browsersync
-            $webpack = fopen(base_path('webpack.mix.js'), 'rw');
-            $wpContents = fread($webpack, filesize(base_path('webpack.mix.js')));
-            $newContent = str_replace('laravel-preset-test.test', $this->options['settings']['uri'], $wpContents);
-            frwite($webpack, $newContent);
-            fclose($webpack);
 
             tap(new Filesystem, function ($files) {
                 $files->delete(resource_path('views/home.blade.php'));
@@ -268,7 +262,11 @@ class Preset extends BasePreset {
         $this->packages = array_merge($this->packages, $this->themePackages);
 
         copy(__DIR__ . '/stubs/theme/webpack.mix.js', base_path('webpack.mix.js'));
-        //TODO: Potentially replace laravel.test url with one from set up questions
+        $webpack = fopen(base_path('webpack.mix.js'), 'rw');
+        $wpContents = fread($webpack, filesize(base_path('webpack.mix.js')));
+        $newContent = str_replace('laravel-preset-test.test', $this->options['settings']['uri'], $wpContents);
+        frwite($webpack, $newContent);
+        fclose($webpack);
         copy(__DIR__ . '/stubs/theme/tailwind.config.js', base_path('tailwind.config.js'));
         copy(__DIR__ . '/stubs/theme/Kernel.php', app_path('Http/Kernel.php'));
 
