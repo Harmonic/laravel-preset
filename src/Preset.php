@@ -133,6 +133,9 @@ class Preset extends BasePreset {
             $this->command->task('Run migrations', function () {
                 $this->runCommand('php artisan migrate');
             });
+            $this->command->task('Create user', function () {
+                $this->runCommand('php artisan make:user');
+            });
         }
 
         if ($this->options['remove_after_install']) {
