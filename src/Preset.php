@@ -281,6 +281,7 @@ class Preset extends BasePreset {
 
         copy(__DIR__ . '/stubs/theme/Model.php', app_path('Model.php'));
         copy(__DIR__ . '/stubs/theme/User.php', app_path('User.php'));
+        copy(__DIR__ . '/stubs/theme/UsersController.php', app_path('Http/Controllers/UsersController.php'));
         copy(__DIR__ . '/stubs/theme/web.php', base_path('routes/web.php'));
         copy(__DIR__ . '/stubs/theme/AppServiceProvider.php', app_path('Providers/AppServiceProvider.php'));
         copy(__DIR__ . '/stubs/theme/2019_05_29_033345_add_soft_deletes_to_users_table.php', base_path('database/migrations/2019_05_29_033345_add_soft_deletes_to_users_table.php'));
