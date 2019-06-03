@@ -35,4 +35,9 @@ class LoginController extends Controller {
     public function showLoginForm() {
         return Inertia::render('Auth/Login');
     }
+
+    public function logout() {
+        \Illuminate\Support\Facades\Auth::logout();
+        return response('Logged out', 200);
+    }
 }
