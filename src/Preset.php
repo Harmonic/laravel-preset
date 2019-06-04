@@ -108,6 +108,8 @@ class Preset extends BasePreset {
                 'bootstrap',
                 'bootstrap-sass',
                 'jquery',
+                'sass',
+                'sass-loader'
             ]);
 
             $this->command->task('Install Tailwindcss', function () {
@@ -128,7 +130,7 @@ class Preset extends BasePreset {
         }
 
         copy(__DIR__ . '/stubs/cypress.json', base_path('cypress.json'));
-        $this->command->task('Install cypress', function () {
+        $this->command->task('Install Cypress', function () {
             $this->runCommand('yarn add cypress --dev');
         });
 
