@@ -127,6 +127,11 @@ class Preset extends BasePreset {
             });
         }
 
+        copy(__DIR__ . '/stubs/cypress.json', base_path('cypress.json'));
+        $this->command->task('Install cypress', function () {
+            $this->runCommand('yarn add cypress --dev');
+        });
+
         $this->updateGitignore();
 
         if ($this->options['theme']) {
