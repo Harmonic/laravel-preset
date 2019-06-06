@@ -134,13 +134,16 @@ class Preset extends BasePreset {
             $this->runCommand('yarn add cypress --dev');
         });
 
-        $this->updateGitignore();
+        $this->command->task('Update .gitignore', function () {
+            $this->updateGitignore();
+        });
 
         if ($this->options['theme']) {
             $this->command->task('Run migrations', function () {
                 $this->runCommand('php artisan migrate');
             });
-            $this->runCommand('php artisan make:user');
+            // $this->runCommand('php artisan make:user');
+            $this->command->call('make:user');
         }
 
         if ($this->options['remove_after_install']) {
