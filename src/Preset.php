@@ -142,7 +142,7 @@ class Preset extends BasePreset {
             $this->command->task('Run migrations', function () {
                 $this->runCommand('php artisan migrate');
             });
-            // $this->runCommand('php artisan make:user');
+
             $this->command->call('make:user');
         }
 
