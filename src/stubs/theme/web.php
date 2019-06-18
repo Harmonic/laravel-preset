@@ -24,13 +24,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Users
-    Route::get('users')->name('users')->uses('UsersController@index')->middleware('remember');
-    Route::get('users/create')->name('users.create')->uses('UsersController@create');
-    Route::post('users')->name('users.store')->uses('UsersController@store');
-    Route::get('users/{user}/edit')->name('users.edit')->uses('UsersController@edit');
-    Route::put('users/{user}')->name('users.update')->uses('UsersController@update');
-    Route::delete('users/{user}')->name('users.destroy')->uses('UsersController@destroy');
-    Route::put('users/{user}/restore')->name('users.restore')->uses('UsersController@restore');
+    Route::inertia('users');
 
     Route::get('/example', function () {
         return Inertia::render('Example/Index');

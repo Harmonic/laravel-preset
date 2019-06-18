@@ -75,6 +75,10 @@ class Preset extends BasePreset {
                 'repo' => 'https://github.com/inertiajs/inertia-laravel',
                 'version' => 'dev-master'
             ];
+            $this->packages['harmonic/inertia-table'] = [
+                'repo' => 'https://github.com/harmonic/inertia-table',
+                'version' => '~1.0.0'
+            ];
             $this->options['packages'][] = 'inertiajs/inertia-laravel';
             self::$jsInclude = array_merge(self::$jsInclude, [
                 'inertia' => 'github:inertiajs/inertia',
@@ -145,6 +149,8 @@ class Preset extends BasePreset {
 
             $this->command->call('php artisan make:user');
         }
+
+        //TODO: Craig delete /resources/js/components folder
 
         if ($this->options['remove_after_install']) {
             $this->command->task('Remove harmonic/laravel-preset', function () {
