@@ -303,6 +303,7 @@ class Preset extends BasePreset {
         tap(new Filesystem, function ($files) {
             $files->delete(resource_path('views/home.blade.php'));
             $files->delete(resource_path('views/welcome.blade.php'));
+            $files->delete(resource_path('js/components/ExampleComponent.vue'));
             $files->copyDirectory(__DIR__ . '/stubs/theme/views', resource_path('views'));
             $files->copyDirectory(__DIR__ . '/stubs/theme/js', resource_path('js'));
             $files->copyDirectory(__DIR__ . '/stubs/theme/css', resource_path('css'));
