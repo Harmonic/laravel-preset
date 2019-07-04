@@ -3,7 +3,7 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A laravel preset that can create a basic Laravel install with some additional composer packages and an optional starting admin theme using InertiaJS and Tailwind CSS as a quick start.
+A Laravel preset that can create a basic Laravel install with some additional composer packages and an optional starting admin theme using InertiaJS and Tailwind CSS as a quick start.
 
 ## Installation
 
@@ -29,6 +29,7 @@ $ php artisan preset harmonic
 - [dyrynda/laravel-make-user](https://github.com/michaeldyrynda/laravel-make-user) (required if theme used)
 - [sempro/phpunit-pretty-print](https://github.com/sempro/phpunit-pretty-print) (dev)
 - [sensiolabs/security-checker](https://github.com/sensiolabs/security-checker) (dev)
+- [harmonic/inertia-table](https://github.com/Harmonic/inertia-table) (required if theme used)
 
 ### Frontend
 
@@ -36,6 +37,8 @@ $ php artisan preset harmonic
 - [InertiaJS](https://github.com/inertiajs/inertia)
 - [Tailwind CSS](https://github.com/tailwindcss/tailwindcss)
 - [Cypress](https://github.com/cypress-io/cypress)
+- [Inertia Table Vue](https://github.com/Harmonic/inertia-table-vue)
+- [Vue Tailwind Modal](https://github.com/Harmonic/vue-tailwind-modal)
 
 ### Stubs
 
@@ -46,6 +49,24 @@ $ php artisan preset harmonic
 - Cypress config (placing cypress inside /tests folder)
 - Authentication stubs (installed with theme)
 - Tailwind admin theme based on Ping CRM interface
+
+## Customisation
+
+Once installed you are free to modify all /resources as you see fit. You can easily customise the colour scheme of the theme by editing tailwind.config.js in the project root with the [Tailwind colours](https://tailwindcss.com/docs/customizing-colors/#default-color-palette) of your choice:
+
+``` js
+module.exports = {
+	theme: {
+		extend: {
+			colors: {
+				primary: colors.indigo,
+				secondary: colors.orange,
+				// ...
+			  }
+		}
+	}
+  }
+```
 
 ## Credits
 
