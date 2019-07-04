@@ -32,9 +32,8 @@ class Preset extends BasePreset {
             'repo' => 'https://github.com/Sempro/phpunit-pretty-print',
             'dev' => true,
         ],
-        'sensiolabs/security-checker' => [
-            'repo' => 'https://github.com/sensiolabs/security-checker',
-            'dev' => true,
+        'Jorijn/laravel-security-checker' => [
+            'repo' => 'https://github.com/Jorijn/laravel-security-checker'
         ],
     ];
     protected $themePackages = [
@@ -83,6 +82,7 @@ class Preset extends BasePreset {
             self::$jsInclude = array_merge(self::$jsInclude, [
                 'inertia' => 'github:inertiajs/inertia',
                 'inertia-vue' => 'inertiajs/inertia-vue',
+                'inertia-table-vue' => 'harmonic/inertia-table-vue',
                 'vue-template-compiler' => '^2.6.10',
             ]);
         }
@@ -150,7 +150,7 @@ class Preset extends BasePreset {
             $this->command->call('php artisan make:user');
         }
 
-        //TODO: Craig delete /resources/js/components folder
+        File::deleteDirectory('resources/js/components');
 
         if ($this->options['remove_after_install']) {
             $this->command->task('Remove harmonic/laravel-preset', function () {
@@ -323,6 +323,7 @@ class Preset extends BasePreset {
             $editor->set('DB_PASSWORD', 'root');
             $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
             $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . '.test');
+            $editor->set('LCS_MAIL_TO', "email@toreceiveupdates.com");
             $editor->save();
         });
         tap(new DotenvEditor, function ($editor) {
