@@ -147,8 +147,6 @@ class Preset extends BasePreset {
             $this->command->task('Run migrations', function () {
                 $this->runCommand('php artisan migrate');
             });
-
-            $this->command->call('make:user');
         }
 
         File::deleteDirectory('resources/js/components');
@@ -366,6 +364,8 @@ class Preset extends BasePreset {
                 $packageData['repo'],
             ]));
         }
+        $this->command->line('');
+        $this->command->info('Create a user with php artisan make:user');
         $this->command->line('');
     }
 }
