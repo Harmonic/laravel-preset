@@ -144,14 +144,17 @@ class Preset extends BasePreset {
         });
 
         if ($this->options['theme']) {
-            $this->command->task('Run migrations', function () {
-                $this->runCommand('php artisan migrate');
-            });
+            // $this->command->task('Run migrations', function () {
+            //     $this->runCommand('php artisan migrate');
+            // });
+            exec('php artisan migrate');
         }
 
         tap(new Filesystem, function ($files) {
             $files->deleteDirectory(resource_path('js/components'));
         });
+
+        exec('php artisan make:user');
 
         if ($this->options['remove_after_install']) {
             $this->command->task('Remove harmonic/laravel-preset', function () {
