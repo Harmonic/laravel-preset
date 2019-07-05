@@ -7,7 +7,7 @@ A Laravel preset that can create a basic Laravel install with some additional co
 
 ## Installation
 
-Assumes a new Laravel installation. Then install the preset with composer.
+Assumes a new Laravel installation with yarn installed globally. Then install the preset with composer.
 
 ``` bash
 $ composer require harmonic/laravel-preset --dev
