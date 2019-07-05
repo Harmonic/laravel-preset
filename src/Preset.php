@@ -148,7 +148,8 @@ class Preset extends BasePreset {
                 $this->runCommand('php artisan migrate');
             });
 
-            $this->command->call('php artisan make:user');
+            $this->info('Run php artisan make:user to create your first user.');
+            //$this->command->call('php artisan make:user');
         }
 
         File::deleteDirectory('resources/js/components');
@@ -324,7 +325,7 @@ class Preset extends BasePreset {
             $editor->set('DB_PASSWORD', 'root');
             $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
             $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . '.test');
-            $editor->set('LCS_MAIL_TO', "email@toreceiveupdates.com");
+            $editor->set('LCS_MAIL_TO', 'email@toreceiveupdates.com');
             $editor->save();
         });
         tap(new DotenvEditor, function ($editor) {
