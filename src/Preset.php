@@ -148,7 +148,7 @@ class Preset extends BasePreset {
                 $this->runCommand('php artisan migrate');
             });
 
-            $this->command->call('php artisan make:user');
+            $this->runCommand('php artisan make:user');
         }
 
         File::deleteDirectory('resources/js/components');
