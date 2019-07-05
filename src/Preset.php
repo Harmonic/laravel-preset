@@ -83,7 +83,7 @@ class Preset extends BasePreset {
             self::$jsInclude = array_merge(self::$jsInclude, [
                 'inertia' => 'github:inertiajs/inertia',
                 'inertia-vue' => 'inertiajs/inertia-vue',
-                'inertia-table' => 'inertia-table',
+                'inertia-table' => '^0.1.4',
                 'vue-template-compiler' => '^2.6.10',
             ]);
         }
@@ -368,6 +368,7 @@ class Preset extends BasePreset {
         }
         $this->command->line('');
         $this->command->info('Create a user with php artisan make:user');
+        $this->command->info('Start the project with yarn dev/watch/hot');
         $this->command->line('');
     }
 }
