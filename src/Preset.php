@@ -149,11 +149,13 @@ class Preset extends BasePreset {
             });
         }
 
-        File::deleteDirectory('resources/js/components');
+        tap(new Filesystem, function ($files) {
+            $files->deleteDirectory(resource_path('js/components'));
+        });
 
         if ($this->options['remove_after_install']) {
             $this->command->task('Remove harmonic/laravel-preset', function () {
-                $this->runCommand('composer remove harmonic/laravel-preset');
+                $this->runCommand('composer remove harmonic/laravel-preset --dev');
                 $this->runCommand('composer dumpautoload');
             });
         }
