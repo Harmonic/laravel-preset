@@ -145,7 +145,7 @@ class Preset extends BasePreset {
 
         if ($this->options['theme']) {
             $this->command->task('Run migrations', function () {
-                $this->runCommand('php artisan migrate');
+                $this->runCommand('php artisan config:clear && php artisan migrate');
             });
         }
 
