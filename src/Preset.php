@@ -224,7 +224,7 @@ class Preset extends BasePreset {
     private function promptForSettings() {
         $name = $this->command->ask('Project name (long for use in .env): ');
         $uri = $this->command->ask('Short name (will be used to create url project-name.test): ');
-        $dbName = $this->command->ask('DB name (MUST EXIST): ', $uri);
+        $dbName = $this->command->ask('DB name (MUST EXIST, blank to not update DB settings): ', '');
 
         return [
             'name' => $name,
@@ -318,10 +318,12 @@ class Preset extends BasePreset {
     private function updateEnvFile() {
         tap(new DotenvEditor, function ($editor) {
             $editor->load(base_path('.env'));
-            $editor->set('DB_DATABASE', $this->options['settings']['db']);
-            $editor->set('DB_HOST', 'mysql');
-            $editor->set('DB_USERNAME', 'root');
-            $editor->set('DB_PASSWORD', 'root');
+            if (!empty($this->options['settings']['db'])) {
+                $editor->set('DB_DATABASE', $this->options['settings']['db']);
+                $editor->set('DB_HOST', 'mysql');
+                $editor->set('DB_USERNAME', 'root');
+                $editor->set('DB_PASSWORD', 'root');
+            }
             $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
             $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . '.test');
             $editor->set('LCS_MAIL_TO', 'email@toreceiveupdates.com');
