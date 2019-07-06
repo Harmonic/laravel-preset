@@ -145,7 +145,10 @@ class Preset extends BasePreset {
 
         if ($this->options['theme']) {
             $this->command->task('Run migrations', function () {
-                $this->runCommand('php artisan config:clear && php artisan migrate');
+                if (!empty($this->options['settings']['db'])) {
+                    $this->runCommand('php artisan config:clear');
+                }
+                $this->runCommand('php artisan migrate');
             });
         }
 
@@ -332,9 +335,11 @@ class Preset extends BasePreset {
         tap(new DotenvEditor, function ($editor) {
             $editor = new DotenvEditor;
             $editor->load(base_path('.env.example'));
-            $editor->set('DB_DATABASE', $this->options['settings']['db']);
-            $editor->set('DB_USERNAME', 'root');
-            $editor->set('DB_PASSWORD', 'root');
+            if (!empty($this->options['settings']['db'])) {
+                $editor->set('DB_DATABASE', $this->options['settings']['db']);
+                $editor->set('DB_USERNAME', 'root');
+                $editor->set('DB_PASSWORD', 'root');
+            }
             $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
             $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . 'test');
             $editor->save();
