@@ -145,9 +145,6 @@ class Preset extends BasePreset {
 
         if ($this->options['theme']) {
             $this->command->task('Run migrations', function () {
-                if (!empty($this->options['settings']['db'])) {
-                    $this->runCommand('php artisan config:clear');
-                }
                 $this->runCommand('php artisan migrate');
             });
         }
@@ -227,12 +224,10 @@ class Preset extends BasePreset {
     private function promptForSettings() {
         $name = $this->command->ask('Project name (long for use in .env): ');
         $uri = $this->command->ask('Short name (will be used to create url project-name.test): ');
-        $dbName = $this->command->ask('DB name (MUST EXIST, blank to not update DB settings): ', '');
 
         return [
             'name' => $name,
             'uri' => $uri,
-            'db' => $dbName
         ];
     }
 
@@ -321,12 +316,6 @@ class Preset extends BasePreset {
     private function updateEnvFile() {
         tap(new DotenvEditor, function ($editor) {
             $editor->load(base_path('.env'));
-            if (!empty($this->options['settings']['db'])) {
-                $editor->set('DB_DATABASE', $this->options['settings']['db']);
-                $editor->set('DB_HOST', 'mysql');
-                $editor->set('DB_USERNAME', 'root');
-                $editor->set('DB_PASSWORD', 'root');
-            }
             $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
             $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . '.test');
             $editor->set('LCS_MAIL_TO', 'email@toreceiveupdates.com');
@@ -335,11 +324,6 @@ class Preset extends BasePreset {
         tap(new DotenvEditor, function ($editor) {
             $editor = new DotenvEditor;
             $editor->load(base_path('.env.example'));
-            if (!empty($this->options['settings']['db'])) {
-                $editor->set('DB_DATABASE', $this->options['settings']['db']);
-                $editor->set('DB_USERNAME', 'root');
-                $editor->set('DB_PASSWORD', 'root');
-            }
             $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
             $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . 'test');
             $editor->save();
