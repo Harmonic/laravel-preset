@@ -348,7 +348,8 @@ class Preset extends BasePreset {
         $this->command->line('');
         $this->command->info('Finish set up by running the following commands:');
         $this->command->info('✅  Create a user with php artisan make:user');
-        $this->command->info('✅  (optionally) Start the project with yarn dev/watch/hot');
+        $this->command->info('✅  (optional) Create an encrypted version of your .env with php artisan env:encrypt');
+        $this->command->info('✅  (optional) Start the project with yarn dev/watch/hot');
         $this->command->line('');
     }
 }

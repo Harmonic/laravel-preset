@@ -5,6 +5,8 @@
 
 A Laravel preset that can create a basic Laravel install with some additional composer packages, Cypress for front end testing and an optional starting admin theme using InertiaJS and Tailwind CSS as a quick start.
 
+![Laravel Preset Screenshot](docs/laravel-preset-screenshot.png)
+
 ## Installation
 
 Before you start make sure you have: 
@@ -25,40 +27,22 @@ $ composer require harmonic/laravel-preset --dev
 $ php artisan preset harmonic
 ```
 
-Once installed you will be prompted to complete installation.
+Once installed you will be prompted to complete installation. 
 
-## What's included?
+### Creating admin pages from models
 
-### Composer Packages
+You can easily and quickly create administration tables with the [Harmonic Inertia Table package](https://github.com/harmonic/inertia-table) that is installed as part of the theme. Simply create a migration then run the artisan command:
 
-- [harmonic/laravel-envcoder](https://github.com/Harmonic/laravel-envcoder) (dev)
-- [bensampo/laravel-enum](https://github.com/BenSampo/laravel-enum) - optional
-- [silber/bouncer:v1.0.0-rc.4](https://github.com/JosephSilber/bouncer) - optional
-- [dyrynda/laravel-make-user](https://github.com/michaeldyrynda/laravel-make-user) (required if theme used)
-- [sempro/phpunit-pretty-print](https://github.com/sempro/phpunit-pretty-print) (dev)
-- [sensiolabs/security-checker](https://github.com/sensiolabs/security-checker) (dev)
-- [harmonic/inertia-table](https://github.com/Harmonic/inertia-table) (required if theme used)
+``` bash
+php artisan make:inertiaTable ModelName
+```
+Where ModelName is the name of the model to create an inertia table from, or the name of the model to create based on the name of an existing table. For further details read the docs for the [Harmonic Inertia Table package](https://github.com/harmonic/inertia-table).
 
-### Frontend
+### Updating the Main Menu
 
-- [VueJS](https://github.com/vuejs/vue)
-- [InertiaJS](https://github.com/inertiajs/inertia)
-- [Tailwind CSS](https://github.com/tailwindcss/tailwindcss)
-- [Cypress](https://github.com/cypress-io/cypress)
-- [Inertia Table Vue](https://github.com/Harmonic/inertia-table-vue)
-- [Vue Tailwind Modal](https://github.com/Harmonic/vue-tailwind-modal)
+You can manually add items to the left hand side menu by editing js/Shared/MainMenu.vue
 
-### Stubs
-
-- .gitignore (to include compiled assets)
-- Removes sass, bootstrap and jquery
-- Inertia JS configuration (installed with theme)
-- Tailwind config (installed with theme)
-- Cypress config (placing cypress inside /tests folder)
-- Authentication stubs (installed with theme)
-- Tailwind admin theme based on Ping CRM interface
-
-## Customisation
+### Customisation
 
 Once installed you are free to modify all /resources as you see fit. You can easily customise the colour scheme of the theme by editing tailwind.config.js in the project root with the [Tailwind colours](https://tailwindcss.com/docs/customizing-colors/#default-color-palette) of your choice:
 
@@ -75,6 +59,37 @@ module.exports = {
 	}
   }
 ```
+
+## What's included?
+
+### Composer Packages
+
+- [harmonic/laravel-envcoder](https://github.com/Harmonic/laravel-envcoder) (dev)
+- [bensampo/laravel-enum](https://github.com/BenSampo/laravel-enum) - optional
+- [silber/bouncer:v1.0.0-rc.4](https://github.com/JosephSilber/bouncer) - optional
+- [dyrynda/laravel-make-user](https://github.com/michaeldyrynda/laravel-make-user) (required if theme used)
+- [sempro/phpunit-pretty-print](https://github.com/sempro/phpunit-pretty-print) (dev)
+- [Jorijn/laravel-security-checker](https://github.com/sJorijn/laravel-security-checker) (dev)
+- [harmonic/inertia-table](https://github.com/Harmonic/inertia-table) (required if theme used)
+
+### Frontend
+
+- [VueJS](https://github.com/vuejs/vue)
+- [InertiaJS](https://github.com/inertiajs/inertia) (required if theme used)
+- [Tailwind CSS](https://github.com/tailwindcss/tailwindcss) (optional)
+- [Cypress](https://github.com/cypress-io/cypress) (optional)
+- [Inertia Table Vue](https://github.com/Harmonic/inertia-table-vue) (required if theme used)
+- [Vue Tailwind Modal](https://github.com/Harmonic/vue-tailwind-modal) (required if theme used)
+
+### Stubs
+
+- .gitignore (to include compiled assets)
+- Removes sass, bootstrap and jquery
+- Inertia JS configuration (installed with theme)
+- Tailwind config (installed with theme)
+- Cypress config (placing cypress inside /tests folder)
+- Authentication stubs (installed with theme)
+- Tailwind admin theme based on [Ping CRM](https://github.com/inertiajs/pingcrm) interface
 
 ## Credits
 
