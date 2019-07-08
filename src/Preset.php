@@ -134,10 +134,12 @@ class Preset extends BasePreset {
             });
         }
 
-        copy(__DIR__ . '/stubs/cypress.json', base_path('cypress.json'));
-        $this->command->task('Install Cypress', function () {
-            $this->runCommand('yarn add cypress --dev');
-        });
+        if ($this->options['cypress']) {
+            copy(__DIR__ . '/stubs/cypress.json', base_path('cypress.json'));
+            $this->command->task('Install Cypress', function () {
+                $this->runCommand('yarn add cypress --dev');
+            });
+        }
 
         $this->command->task('Update .gitignore', function () {
             $this->updateGitignore();
@@ -189,7 +191,7 @@ class Preset extends BasePreset {
 
     private function gatherOptions() {
         $options = [
-            'settings' => $this->promptForSettings(),
+            'cypress' => $this->command->confirm('Install cypress for front end testing?', true),
             'theme' => $this->command->confirm('Install harmonic theme?', true),
             'packages' => $this->promptForPackagesToInstall(),
             'remove_after_install' => $this->command->confirm('Remove harmonic/laravel-preset after install?', true),
@@ -219,16 +221,6 @@ class Preset extends BasePreset {
             return [];
         }
         return $choices;
-    }
-
-    private function promptForSettings() {
-        $name = $this->command->ask('Project name (long for use in .env): ');
-        $uri = $this->command->ask('Short name (will be used to create url project-name.test): ');
-
-        return [
-            'name' => $name,
-            'uri' => $uri,
-        ];
     }
 
     private function updateComposerPackages() {
@@ -286,7 +278,7 @@ class Preset extends BasePreset {
         copy(__DIR__ . '/stubs/theme/webpack.mix.js', base_path('webpack.mix.js'));
         $webpack = fopen(base_path('webpack.mix.js'), 'rw');
         $wpContents = fread($webpack, filesize(base_path('webpack.mix.js')));
-        $newContent = str_replace('laravel-preset-test.test', $this->options['settings']['uri'], $wpContents);
+        $newContent = str_replace('laravel-preset-test.test', parse_url(config('app.url'))['host'], $wpContents);
         fwrite($webpack, $newContent);
         fclose($webpack);
         copy(__DIR__ . '/stubs/theme/tailwind.config.js', base_path('tailwind.config.js'));
@@ -316,16 +308,12 @@ class Preset extends BasePreset {
     private function updateEnvFile() {
         tap(new DotenvEditor, function ($editor) {
             $editor->load(base_path('.env'));
-            $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
-            $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . '.test');
             $editor->set('LCS_MAIL_TO', 'email@toreceiveupdates.com');
             $editor->save();
         });
         tap(new DotenvEditor, function ($editor) {
             $editor = new DotenvEditor;
             $editor->load(base_path('.env.example'));
-            $editor->set('APP_NAME', '"' . $this->options['settings']['name'] . '"');
-            $editor->set('APP_URL', 'http://' . $this->options['settings']['uri'] . 'test');
             $editor->save();
         });
     }
@@ -349,7 +337,7 @@ class Preset extends BasePreset {
 
     private function outputSuccessMessage() {
         $this->command->line('');
-        $this->command->info('Preset installation complete. The packages that were installed may require additional installation steps.');
+        $this->command->info('🎉  Preset installation complete. The packages that were installed may require additional installation steps.');
         $this->command->line('');
         foreach ($this->getInstalledPackages() as $package => $packageData) {
             $this->command->getOutput()->writeln(vsprintf('- %s: <comment>%s</comment>', [
@@ -358,8 +346,9 @@ class Preset extends BasePreset {
             ]));
         }
         $this->command->line('');
-        $this->command->info('Create a user with php artisan make:user');
-        $this->command->info('Start the project with yarn dev/watch/hot');
+        $this->command->info('Finish set up by running the following commands:');
+        $this->command->info('✅  Create a user with php artisan make:user');
+        $this->command->info('✅  (optionally) Start the project with yarn dev/watch/hot');
         $this->command->line('');
     }
 }

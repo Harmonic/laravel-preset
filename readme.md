@@ -3,7 +3,7 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A Laravel preset that can create a basic Laravel install with some additional composer packages and an optional starting admin theme using InertiaJS and Tailwind CSS as a quick start.
+A Laravel preset that can create a basic Laravel install with some additional composer packages, Cypress for front end testing and an optional starting admin theme using InertiaJS and Tailwind CSS as a quick start.
 
 ## Installation
 
