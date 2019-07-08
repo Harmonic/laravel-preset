@@ -125,6 +125,8 @@ class Preset extends BasePreset {
             });
             $this->command->task('Install node dependencies with Yarn', function () {
                 $this->runCommand('yarn install');
+                $this->runCommand('yarn add -D eslint eslint-plugin-vue');
+                copy(__DIR__ . '/stubs/.eslintrc.js', base_path('.eslintrc.js'));
             });
             $this->command->task('Setup Tailwindcss', function () {
                 $this->runCommand('yarn tailwind init');
@@ -320,6 +322,9 @@ class Preset extends BasePreset {
 
     private function updateGitignore() {
         copy(__DIR__ . '/stubs/gitignore-stub', base_path('.gitignore'));
+        copy(__DIR__ . '/stubs/disable.xdebug.ini', base_path('disable.xdebug.ini'));
+        copy(__DIR__ . '/stubs/run-tests.sh', base_path('run-tests.sh'));
+        chmod(base_path('run-tests.sh'), 0755);
     }
 
     private function runCommand($command) {
@@ -348,6 +353,7 @@ class Preset extends BasePreset {
         $this->command->line('');
         $this->command->info('Finish set up by running the following commands:');
         $this->command->info('✅  Create a user with php artisan make:user');
+        $this->command->info('✅  Update the LCS_MAIL_TO .env variable with a meaningful email address');
         $this->command->info('✅  (optional) Create an encrypted version of your .env with php artisan env:encrypt');
         $this->command->info('✅  (optional) Start the project with yarn dev/watch/hot');
         $this->command->line('');
