@@ -64,8 +64,9 @@ class Preset extends BasePreset {
         $this->command->info(' Harmonic Preset');
         $this->command->info('=================');
         $this->command->info('Before you run the preset please confirm you have:');
-        $this->command->info('✔️ Set up and configured your database and URL in .env');
-        $this->command->info('✔️ Run the intial Laravel migrations with php artisan migrate');
+        $this->command->info('✔️  Set up and configured your database and URL in .env');
+        $this->command->info('✔️  Run the intial Laravel migrations with php artisan migrate');
+        $this->command->info('✔️  Have yarn installed globally');
         $this->command->confirm("Yes, I've done all this, lets get creating!", true);
 
         $this->options = $this->gatherOptions();
