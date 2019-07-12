@@ -60,6 +60,14 @@ class Preset extends BasePreset {
     }
 
     public function run() {
+        $this->command->info('=================');
+        $this->command->info(' Harmonic Preset');
+        $this->command->info('=================');
+        $this->command->info('Before you run the preset please confirm you have:');
+        $this->command->info('✔️ Set up and configured your database and URL in .env');
+        $this->command->info('✔️ Run the intial Laravel migrations with php artisan migrate');
+        $this->command->confirm("Yes, I've done all this, lets get creating!", true);
+
         $this->options = $this->gatherOptions();
 
         if ($this->options['theme']) {
@@ -277,12 +285,12 @@ class Preset extends BasePreset {
         $this->options['packages'] = array_merge($this->options['packages'], $themePackages);
         $this->packages = array_merge($this->packages, $this->themePackages);
 
+        // Add correct url to webpack
         copy(__DIR__ . '/stubs/theme/webpack.mix.js', base_path('webpack.mix.js'));
-        $webpack = fopen(base_path('webpack.mix.js'), 'rw');
-        $wpContents = fread($webpack, filesize(base_path('webpack.mix.js')));
-        $newContent = str_replace('laravel-preset-test.test', parse_url(config('app.url'))['host'], $wpContents);
-        fwrite($webpack, $newContent);
-        fclose($webpack);
+        $oldWebpack = \file_get_contents(base_path('webpack.mix.js'));
+        $newContent = str_replace('laravel-preset-test.test', parse_url(config('app.url'))['host'], $oldWebpack);
+        \file_put_contents(base_path('webpack.mix.js'), $newContent);
+
         copy(__DIR__ . '/stubs/theme/tailwind.config.js', base_path('tailwind.config.js'));
         copy(__DIR__ . '/stubs/theme/Kernel.php', app_path('Http/Kernel.php'));
 
