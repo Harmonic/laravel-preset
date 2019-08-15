@@ -27,7 +27,7 @@ $ composer require harmonic/laravel-preset --dev
 $ php artisan preset harmonic
 ```
 
-Once installed you will be prompted to complete installation. 
+Once installed you will be prompted to remove the package (as it's no longer required). 
 
 ### Creating admin pages from models
 
