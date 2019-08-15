@@ -67,7 +67,10 @@ class Preset extends BasePreset {
         $this->command->info('✔️  Set up and configured your database and URL in .env');
         $this->command->info('✔️  Run the intial Laravel migrations with php artisan migrate');
         $this->command->info('✔️  Have yarn installed globally');
-        $this->command->confirm("Yes, I've done all this, lets get creating!", true);
+        $continue = $this->command->confirm("Yes, I've done all this, lets get creating!", true);
+        if (!$continue) {
+            return;
+        }
 
         $this->options = $this->gatherOptions();
 
