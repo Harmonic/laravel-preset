@@ -81,7 +81,7 @@ class Preset extends BasePreset {
         if ($this->options['install_inertia']) {
             $this->packages['inertiajs/inertia-laravel'] = [
                 'repo' => 'https://github.com/inertiajs/inertia-laravel',
-                'version' => 'dev-master'
+                'version' => '^0.1.0'
             ];
             $this->packages['harmonic/inertia-table'] = [
                 'repo' => 'https://github.com/harmonic/inertia-table',
@@ -90,8 +90,8 @@ class Preset extends BasePreset {
             $this->options['packages'][] = 'inertiajs/inertia-laravel';
             $this->options['packages'][] = 'harmonic/inertia-table';
             self::$jsInclude = array_merge(self::$jsInclude, [
-                'inertia' => 'github:inertiajs/inertia',
-                'inertia-vue' => 'inertiajs/inertia-vue',
+                '@inertiajs/inertia' => '^0.1.0',
+                '@inertiajs/inertia-vue' => '^0.10',
                 'inertia-table' => '^0.1.5',
                 'vue-template-compiler' => '^2.6.10',
             ]);
