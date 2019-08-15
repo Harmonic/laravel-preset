@@ -13,7 +13,7 @@ Before you start make sure you have:
 
 1) A new Laravel installation (this preset will overwrite laravel settings so do not use on existing projects)
 2) yarn installed globally 
-3) DB configured in your .env
+3) DB configured in your .env and migrations run (php artisan migrate)
       
 Then install the preset with composer.
 
