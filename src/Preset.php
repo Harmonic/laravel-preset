@@ -94,7 +94,7 @@ class Preset extends BasePreset {
             $this->options['packages'][] = 'harmonic/inertia-table';
             self::$jsInclude = array_merge(self::$jsInclude, [
                 '@inertiajs/inertia' => '^0.1.0',
-                '@inertiajs/inertia-vue' => '^0.10',
+                '@inertiajs/inertia-vue' => '^0.1.0',
                 'inertia-table' => '^0.1.8',
                 'vue-template-compiler' => '^2.6.10',
             ]);
