@@ -24,7 +24,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Users
-    Route::inertia('users');
+    Route::inertiaTable('users');
 
     Route::get('/example', function () {
         return Inertia::render('Example/Index');
