@@ -95,7 +95,7 @@ class Preset extends BasePreset {
             self::$jsInclude = array_merge(self::$jsInclude, [
                 '@inertiajs/inertia' => '^0.1.0',
                 '@inertiajs/inertia-vue' => '^0.1.0',
-                'inertia-table' => '^0.1.8',
+                'inertia-table' => '^1.0.8',
                 'vue-template-compiler' => '^2.6.10',
             ]);
         }
@@ -369,6 +369,7 @@ class Preset extends BasePreset {
         $this->command->info('✅  Update the LCS_MAIL_TO .env variable with a meaningful email address');
         $this->command->info('✅  (optional) Create an encrypted version of your .env with php artisan env:encrypt');
         $this->command->info('✅  (optional) Start the project with yarn dev/watch/hot');
+        $this->command->info('✅  yarn run dev');
         $this->command->line('');
     }
 }
