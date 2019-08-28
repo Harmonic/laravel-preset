@@ -95,7 +95,7 @@ class Preset extends BasePreset {
             self::$jsInclude = array_merge(self::$jsInclude, [
                 '@inertiajs/inertia' => '^0.1.0',
                 '@inertiajs/inertia-vue' => '^0.10',
-                'inertia-table' => '^0.1.5',
+                'inertia-table' => '^0.1.8',
                 'vue-template-compiler' => '^2.6.10',
             ]);
         }
