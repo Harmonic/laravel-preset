@@ -18,7 +18,7 @@ class Preset extends BasePreset {
         ],
         'silber/bouncer' => [
             'repo' => 'https://github.com/JosephSilber/bouncer',
-            'version' => 'v1.0.0-rc.5',
+            'version' => 'v1.0.0-rc.6',
         ],
         'harmonic/laravel-envcoder' => [
             'repo' => 'https://github.com/Harmonic/laravel-envcoder',
@@ -88,7 +88,7 @@ class Preset extends BasePreset {
             ];
             $this->packages['harmonic/inertia-table'] = [
                 'repo' => 'https://github.com/harmonic/inertia-table',
-                'version' => '^1.0.0'
+                'version' => '^1.1.0'
             ];
             $this->options['packages'][] = 'inertiajs/inertia-laravel';
             $this->options['packages'][] = 'harmonic/inertia-table';
