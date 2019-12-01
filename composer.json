@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "laravel/framework": "^5.8",
+        "laravel/framework": "^5.8 || ^6.0",
         "nunomaduro/laravel-console-task": "^1.2",
         "sixlive/dotenv-editor": "^1.2"
     },
