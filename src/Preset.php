@@ -8,6 +8,7 @@ use Illuminate\Foundation\Console\Presets\Preset as BasePreset;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use sixlive\DotenvEditor\DotenvEditor;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class Preset extends BasePreset
@@ -156,7 +157,11 @@ class Preset extends BasePreset
                 copy(__DIR__ . '/stubs/.eslintrc.js', base_path('.eslintrc.js'));
             });
             $this->command->task('Setup tailwindcss', function () {
-                $this->runCommand('yarn tailwind init');
+                try {
+                    $this->runCommand('yarn tailwind init');
+                } catch (ProcessFailedException $e) {
+                    // Tailwind already setup by the theme
+                }
             });
             $this->command->task('Run node dev build with Yarn', function () {
                 $this->runCommand('yarn dev');
