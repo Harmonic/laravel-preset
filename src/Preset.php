@@ -160,7 +160,7 @@ class Preset extends BasePreset
                 try {
                     $this->runCommand('yarn tailwind init');
                 } catch (ProcessFailedException $e) {
-                    // Tailwind already setup by the theme
+                    $this->command->info('Tailwind already configured, skipping');
                 }
             });
             $this->command->task('Run node dev build with Yarn', function () {
