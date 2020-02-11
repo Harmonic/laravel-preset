@@ -5,7 +5,7 @@ namespace harmonic\LaravelPreset;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Console\PresetCommand;
 
-class PresetServiceProvider extends ServiceProvider {
+class LaravelPresetServiceProvider extends ServiceProvider {
     public function boot() {
         PresetCommand::macro('harmonic', function ($command) {
             // Do the preset work

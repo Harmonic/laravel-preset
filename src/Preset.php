@@ -2,23 +2,30 @@
 
 namespace harmonic\LaravelPreset;
 
-use sixlive\DotenvEditor\DotenvEditor;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Arr;
-use Illuminate\Foundation\Console\Presets\Preset as BasePreset;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Console\PresetCommand;
+use Illuminate\Foundation\Console\Presets\Preset as BasePreset;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use sixlive\DotenvEditor\DotenvEditor;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
-class Preset extends BasePreset {
+class Preset extends BasePreset
+{
+    /** @var PresetCommand */
     protected $command;
+
     protected $options = [];
     protected static $installTheme = false;
+
     protected $packages = [
         'bensampo/laravel-enum' => [
             'repo' => 'https://github.com/BenSampo/laravel-enum',
         ],
         'silber/bouncer' => [
             'repo' => 'https://github.com/JosephSilber/bouncer',
-            'version' => 'v1.0.0-rc.5',
+            'version' => 'v1.0.0-rc.6',
         ],
         'harmonic/laravel-envcoder' => [
             'repo' => 'https://github.com/Harmonic/laravel-envcoder',
@@ -33,41 +40,49 @@ class Preset extends BasePreset {
             'dev' => true,
         ],
         'Jorijn/laravel-security-checker' => [
-            'repo' => 'https://github.com/Jorijn/laravel-security-checker'
+            'repo' => 'https://github.com/Jorijn/laravel-security-checker',
         ],
     ];
+
     protected $themePackages = [
         'tightenco/ziggy' => [
             'repo' => 'https://github.com/tightenco/ziggy',
         ],
         'reinink/remember-query-strings' => [
             'repo' => 'https://github.com/reinink/remember-query-strings',
-        ]
+        ],
     ];
+
     protected static $jsInclude = [
         '@babel/plugin-syntax-dynamic-import' => '^7.2.0',
         'browser-sync' => '^2.26.5',
         'browser-sync-webpack-plugin' => '2.0.1',
     ];
+
     protected static $jsExclude = [];
 
-    public function __construct($command) {
+    public function __construct($command)
+    {
         $this->command = $command;
     }
 
-    public static function install($command) {
+    public static function install($command): void
+    {
         (new static($command))->run();
     }
 
-    public function run() {
+
+    public function run(): void
+    {
         $this->command->info('=================');
         $this->command->info(' Harmonic Preset');
         $this->command->info('=================');
         $this->command->info('Before you run the preset please confirm you have:');
         $this->command->info('✔️  Set up and configured your database and URL in .env');
-        $this->command->info('✔️  Run the intial Laravel migrations with php artisan migrate');
+        $this->command->info('✔️  Run the initial Laravel migrations with php artisan migrate');
         $this->command->info('✔️  Have yarn installed globally');
         $continue = $this->command->confirm("Yes, I've done all this, lets get creating!", true);
+
         if (!$continue) {
             return;
         }
@@ -84,14 +99,15 @@ class Preset extends BasePreset {
         if ($this->options['install_inertia']) {
             $this->packages['inertiajs/inertia-laravel'] = [
                 'repo' => 'https://github.com/inertiajs/inertia-laravel',
-                'version' => '^0.1.0'
+                'version' => '^0.2.0',
             ];
             $this->packages['harmonic/inertia-table'] = [
                 'repo' => 'https://github.com/harmonic/inertia-table',
-                'version' => '^1.0.0'
+                'version' => '^1.0.7',
             ];
             $this->options['packages'][] = 'inertiajs/inertia-laravel';
             $this->options['packages'][] = 'harmonic/inertia-table';
+
             self::$jsInclude = array_merge(self::$jsInclude, [
                 '@inertiajs/inertia' => '^0.1.0',
                 '@inertiajs/inertia-vue' => '^0.1.0',
@@ -118,7 +134,7 @@ class Preset extends BasePreset {
                 'laravel-mix-purgecss' => '^4.1.0',
                 'postcss-import' => '^12.0.1',
                 'postcss-nesting' => '^7.0.0',
-                'tailwindcss' => '>=1.0.0'
+                'tailwindcss' => '>=1.0.0',
             ]);
 
             self::$jsExclude = array_merge(self::$jsExclude, [
@@ -126,10 +142,10 @@ class Preset extends BasePreset {
                 'bootstrap-sass',
                 'jquery',
                 'sass',
-                'sass-loader'
+                'sass-loader',
             ]);
 
-            $this->command->task('Install Tailwindcss', function () {
+            $this->command->task('Install tailwindcss', function () {
                 static::ensureComponentDirectoryExists();
                 static::updatePackages();
                 $this->tailwindTemplate();
@@ -140,8 +156,12 @@ class Preset extends BasePreset {
                 $this->runCommand('yarn add -D eslint eslint-plugin-vue');
                 copy(__DIR__ . '/stubs/.eslintrc.js', base_path('.eslintrc.js'));
             });
-            $this->command->task('Setup Tailwindcss', function () {
-                $this->runCommand('yarn tailwind init');
+            $this->command->task('Setup tailwindcss', function () {
+                try {
+                    $this->runCommand('yarn tailwind init');
+                } catch (ProcessFailedException $e) {
+                    $this->command->info('Tailwind already configured, skipping');
+                }
             });
             $this->command->task('Run node dev build with Yarn', function () {
                 $this->runCommand('yarn dev');
@@ -179,7 +199,8 @@ class Preset extends BasePreset {
         $this->outputSuccessMessage();
     }
 
-    private function tailwindTemplate() {
+    private function tailwindTemplate(): void
+    {
         tap(new Filesystem, function ($files) {
             $files->deleteDirectory(resource_path('sass'));
             $files->delete(public_path('css/app.css'));
@@ -199,11 +220,13 @@ class Preset extends BasePreset {
         }
     }
 
-    protected static function updatePackageArray(array $packages) {
+    protected static function updatePackageArray(array $packages): array
+    {
         return array_merge(static::$jsInclude, Arr::except($packages, static::$jsExclude));
     }
 
-    private function gatherOptions() {
+    private function gatherOptions(): array
+    {
         $options = [
             'cypress' => $this->command->confirm('Install cypress for front end testing?', true),
             'theme' => $this->command->confirm('Install harmonic theme?', true),
@@ -219,7 +242,8 @@ class Preset extends BasePreset {
         return $options;
     }
 
-    private function promptForPackagesToInstall() {
+    private function promptForPackagesToInstall(): array
+    {
         $possiblePackages = $this->packages();
         $choices = $this->command->choice(
             'Which optional packages should be installed? (e.x. 1,2)',
@@ -228,37 +252,42 @@ class Preset extends BasePreset {
             null,
             true
         );
-        if (in_array('all', $choices)) {
+        if (in_array('all', $choices, true)) {
             return $possiblePackages;
         }
-        if (in_array('none', $choices)) {
+        if (in_array('none', $choices, true)) {
             return [];
         }
+
         return $choices;
     }
 
-    private function updateComposerPackages() {
+    private function updateComposerPackages(): void
+    {
         $this->runCommand(sprintf(
             'composer require %s',
             $this->resolveForComposer($this->options['packages'])
         ));
     }
 
-    private function packages() {
+    private function packages(): array
+    {
         return Collection::make($this->packages)
             ->where('dev', false)
             ->keys()
             ->toArray();
     }
 
-    private function devPackages() {
+    private function devPackages(): array
+    {
         return Collection::make($this->packages)
             ->where('dev', true)
             ->keys()
             ->toArray();
     }
 
-    private function resolveForComposer($packages) {
+    private function resolveForComposer($packages): string
+    {
         return Collection::make($packages)
             ->transform(function ($package) {
                 return isset($this->packages[$package]['version'])
@@ -268,14 +297,16 @@ class Preset extends BasePreset {
             ->implode(' ');
     }
 
-    private function updateComposerDevPackages() {
+    private function updateComposerDevPackages(): void
+    {
         $this->runCommand(sprintf(
             'composer require --dev %s',
             $this->resolveForComposer($this->devPackages())
         ));
     }
 
-    private function installTheme() {
+    private function installTheme(): void
+    {
         $this->options['install_tailwind'] = true;
         $this->options['install_inertia'] = true;
 
@@ -315,11 +346,10 @@ class Preset extends BasePreset {
             $files->copyDirectory(__DIR__ . '/stubs/theme/Auth', app_path('Http/Controllers/Auth'));
             $files->copyDirectory(__DIR__ . '/stubs/theme/Traits', app_path('Traits'));
         });
-
-        return true;
     }
 
-    private function updateEnvFile() {
+    private function updateEnvFile(): void
+    {
         tap(new DotenvEditor, function ($editor) {
             $editor->load(base_path('.env'));
             $editor->set('LCS_MAIL_TO', 'email@toreceiveupdates.com');
@@ -332,27 +362,32 @@ class Preset extends BasePreset {
         });
     }
 
-    private function updateGitignore() {
+    private function updateGitignore(): void
+    {
         copy(__DIR__ . '/stubs/gitignore-stub', base_path('.gitignore'));
         copy(__DIR__ . '/stubs/disable.xdebug.ini', base_path('disable.xdebug.ini'));
         copy(__DIR__ . '/stubs/run-tests.sh', base_path('run-tests.sh'));
         chmod(base_path('run-tests.sh'), 0755);
     }
 
-    private function runCommand($command) {
-        return exec(sprintf('%s 2>&1', $command));
+    private function runCommand($command): void
+    {
+        $process = Process::fromShellCommandline(sprintf('%s 2>&1', $command));
+        $process->mustRun(); // Throws exception on failure
     }
 
-    private function getInstalledPackages() {
+    private function getInstalledPackages(): array
+    {
         return Collection::make($this->packages)
             ->filter(function ($data, $package) {
-                return in_array($package, $this->options['packages'])
+                return in_array($package, $this->options['packages'], true)
                     || ($data['dev'] ?? false);
             })
             ->toArray();
     }
 
-    private function outputSuccessMessage() {
+    private function outputSuccessMessage(): void
+    {
         $this->command->line('');
         $this->command->info('🎉  Preset installation complete. The packages that were installed may require additional installation steps.');
         $this->command->line('');
