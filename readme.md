@@ -94,6 +94,7 @@ module.exports = {
 ## Credits
 
 - [Craig Harman][link-author]
+- Laravel 6 compatibility and general clean up by [atymic](https://github.com/atymic)
 - [All Contributors][link-contributors]
 - Based on [sixlive laravel preset](https://github.com/sixlive/laravel-preset)
 - Admin UI based on [Ping CRM](https://github.com/inertiajs/pingcrm)
