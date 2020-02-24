@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use harmonic\InertiaTable\Facades\InertiaTable;
 use Illuminate\Validation\Rule;
@@ -21,13 +22,15 @@ class UsersController extends Controller {
     }
 
     public function store() {
-        Auth::user()->create(
-            Request::validate([
-                'name' => ['required', 'max:50'],
-                'email' => ['required', 'max:50', 'email', Rule::unique('users')],
-                'password' => ['nullable'],
-            ])
-        );
+        $validated = Request::validate([
+            'name' => ['required', 'max:50'],
+            'email' => ['required', 'max:50', 'email', Rule::unique('users')],
+            'password' => ['required', 'min:8'],
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        Auth::user()->create($validated);
 
         return Redirect::route('users');
     }
@@ -53,7 +56,7 @@ class UsersController extends Controller {
         $user->update(Request::only('name', 'email'));
 
         if (Request::get('password')) {
-            $user->update(['password' => Request::get('password')]);
+            $user->update(['password' => Hash::make(Request::get('password'))]);
         }
 
         return Redirect::route('users.edit', $user);
